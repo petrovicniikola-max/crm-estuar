@@ -1,0 +1,74 @@
+# CRM samo na Raspberry Pi – pristup sa LAN-a (npr. http://192.168.50.155)
+# Pokretanje na Pi:
+#   docker compose -p opt -f /opt/docker-compose.pi-local.yml --env-file /opt/.env up -d --build
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: programai_postgres
+    environment:
+      POSTGRES_DB: programai
+      POSTGRES_USER: programai
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-programai}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U programai"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: programai_redis
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./programai-crm/backend
+      dockerfile: Dockerfile
+    container_name: programai_backend
+    environment:
+      DATABASE_URL: postgresql://programai:${POSTGRES_PASSWORD:-programai}@postgres:5432/programai
+      PORT: "3001"
+      FRONTEND_URL: ${FRONTEND_URL:-http://192.168.50.155}
+      REDIS_ENABLED: ${REDIS_ENABLED:-true}
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./programai-frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://192.168.50.155/api}
+    container_name: programai_frontend
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: programai_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - /opt/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,14 @@
+# Pi – samo LAN, bez HTTPS (VPS nije potreban)
+:80 {
+  encode gzip
+
+  @api path /api /api/*
+  handle @api {
+    uri strip_prefix /api
+    reverse_proxy backend:3001
+  }
+
+  handle {
+    reverse_proxy frontend:3000
+  }
+}
