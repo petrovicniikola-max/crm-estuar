@@ -1,6 +1,6 @@
-# Produkcija: Postgres, Redis, Backend, Frontend
-# Pokretanje: docker compose -f docker-compose.prod.yml up -d --build
-# Zaustavljanje: docker compose -f docker-compose.prod.yml down
+# Produkcija na Raspberry Pi (CRM iza WireGuard-a, HTTPS na VPS-u)
+# Pokretanje: docker compose -p opt -f /opt/docker-compose.prod.yml --env-file /opt/.env up -d --build
+# Zaustavljanje: docker compose -p opt -f /opt/docker-compose.prod.yml down
 
 services:
   postgres:
@@ -32,7 +32,7 @@ services:
     environment:
       DATABASE_URL: postgresql://programai:${POSTGRES_PASSWORD:-programai}@postgres:5432/programai
       PORT: "3001"
-      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      FRONTEND_URL: ${FRONTEND_URL:-https://crm.estuar.rs}
       REDIS_ENABLED: ${REDIS_ENABLED:-true}
       REDIS_HOST: redis
       REDIS_PORT: "6379"
@@ -42,22 +42,33 @@ services:
       redis:
         condition: service_started
     restart: unless-stopped
-    ports:
-      - "3001:3001"
 
   frontend:
     build:
       context: ./programai-frontend
       dockerfile: Dockerfile
       args:
-        # Na produkciji postavi na pravi URL API-ja (npr. https://api.tvojdomen.rs)
-        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:3001}
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-https://crm.estuar.rs/api}
     container_name: programai_frontend
     depends_on:
       - backend
     restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: programai_caddy
+    restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "10.66.0.2:80:80"
+    volumes:
+      - /opt/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - backend
 
 volumes:
   pgdata:
+  caddy_data:
+  caddy_config:
