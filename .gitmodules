@@ -1,0 +1,6 @@
+[submodule "programai-crm"]
+	path = programai-crm
+	url = https://github.com/petrovicniikola-max/programai-crm.git
+[submodule "programai-frontend"]
+	path = programai-frontend
+	url = https://github.com/petrovicniikola-max/programai-frontend.git

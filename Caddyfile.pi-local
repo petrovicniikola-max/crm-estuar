@@ -1,4 +1,4 @@
-# Pi – samo LAN, bez HTTPS (VPS nije potreban)
+# Pi – samo LAN, bez HTTPS
 :80 {
   encode gzip
 
@@ -6,6 +6,11 @@
   handle @api {
     uri strip_prefix /api
     reverse_proxy backend:3001
+  }
+
+  @mapa path /mapa /mapa/*
+  handle @mapa {
+    reverse_proxy mapa:3000
   }
 
   handle {
