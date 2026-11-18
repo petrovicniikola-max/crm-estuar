@@ -8,6 +8,7 @@
     reverse_proxy backend:3001
   }
 
+  # Next.js mapa sa basePath=/mapa — NE skidati prefiks
   @mapa path /mapa /mapa/*
   handle @mapa {
     reverse_proxy mapa:3000

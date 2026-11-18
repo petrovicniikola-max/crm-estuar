@@ -71,6 +71,8 @@ services:
       args:
         NEXT_PUBLIC_BASE_PATH: /mapa
     container_name: programai_mapa
+    ports:
+      - "3847:3000"
     restart: unless-stopped
 
   caddy:
