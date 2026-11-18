@@ -5,7 +5,7 @@ LAN stack za Raspberry Pi 5: CRM na portu 80, zidna mapa na `/mapa`.
 ## Pristup u lokalu
 
 - CRM: `http://IP-PI` (npr. `http://192.168.50.155`)
-- Mapa: `http://IP-PI/mapa`
+- Mapa: `http://IP-PI:3847` (npr. `http://192.168.50.155:3847`)
 
 IP na Pi: `hostname -I`
 

@@ -1,13 +1,6 @@
 # CRM + Mapa održavanja na Raspberry Pi – pristup sa LAN-a
-# Primer: http://192.168.50.155  (CRM)
-#         http://192.168.50.155/mapa  (zidna mapa)
-#
-# Priprema na Pi (jednom):
-#   sudo mkdir -p /opt && cd /opt
-#   git clone --recurse-submodules https://github.com/petrovicniikola-max/crm-estuar.git .
-#   # ili ako je već klonirano: git pull && git submodule update --init --recursive
-#   sudo cp Caddyfile.pi-local /opt/Caddyfile
-#   sudo cp docker-compose.pi-local.yml /opt/docker-compose.pi-local.yml
+# CRM:  http://192.168.50.155
+# Mapa: http://192.168.50.155:3847
 #
 # Pokretanje:
 #   docker compose -p opt -f /opt/docker-compose.pi-local.yml --env-file /opt/.env up -d --build
@@ -68,8 +61,6 @@ services:
     build:
       context: ./mapa-odrzavanja
       dockerfile: Dockerfile
-      args:
-        NEXT_PUBLIC_BASE_PATH: /mapa
     container_name: programai_mapa
     ports:
       - "3847:3000"

@@ -1,4 +1,6 @@
 # Pi – samo LAN, bez HTTPS
+# CRM:  http://IP/
+# Mapa: http://IP:3847/  (i redirect sa /mapa)
 :80 {
   encode gzip
 
@@ -8,10 +10,10 @@
     reverse_proxy backend:3001
   }
 
-  # Next.js mapa sa basePath=/mapa — NE skidati prefiks
+  # Preusmeri /mapa → port 3847 (zidni ekran)
   @mapa path /mapa /mapa/*
   handle @mapa {
-    reverse_proxy mapa:3000
+    redir * http://{http.request.host}:3847/ 302
   }
 
   handle {
