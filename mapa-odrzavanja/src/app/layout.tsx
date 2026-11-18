@@ -5,12 +5,16 @@ import "./globals.css";
 const outfit = Outfit({
   variable: "--font-body",
   subsets: ["latin", "latin-ext"],
+  display: "swap",
+  fallback: ["Arial", "Helvetica", "sans-serif"],
 });
 
 const barlow = Barlow_Condensed({
   variable: "--font-display",
   subsets: ["latin", "latin-ext"],
   weight: ["500", "600", "700"],
+  display: "swap",
+  fallback: ["Arial Narrow", "Arial", "sans-serif"],
 });
 
 export const metadata: Metadata = {

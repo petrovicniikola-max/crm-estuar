@@ -1,4 +1,3 @@
-# Mapa održavanja – wall map za Raspberry Pi (LAN, port 3847)
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package.json package-lock.json* ./
