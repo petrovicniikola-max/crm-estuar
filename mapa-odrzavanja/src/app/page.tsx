@@ -1,5 +1,5 @@
-import { WallMap } from "@/components/wall-map/wall-map";
+import { WallMapRoot } from "@/components/wall-map/wall-map-root";
 
 export default function Home() {
-  return <WallMap />;
+  return <WallMapRoot />;
 }

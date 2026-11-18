@@ -16,7 +16,13 @@ const barlow = Barlow_Condensed({
 export const metadata: Metadata = {
   title: "Mapa održavanja",
   description:
-    "Zidni pregled lokacija, uređaja i režima podrške koje održavamo — 24/7, planirano i mreža.",
+    "Zidni pregled lokacija, uređaja i režima podrške — 24/7, 8–16h i call centar.",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
